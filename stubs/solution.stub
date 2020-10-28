@@ -1,0 +1,23 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\SolutionInterface;
+use App\InputInterface;
+
+class DummyClass implements SolutionInterface
+{
+    public function partOne(InputInterface $input): string
+    {
+        // STUB
+
+        return '';
+    }
+
+    public function partTwo(InputInterface $input): string
+    {
+        // STUB
+
+        return '';
+    }
+}
