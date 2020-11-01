@@ -3,6 +3,8 @@
 namespace App\Commands;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use LaravelZero\Framework\Commands\Command;
 
 class AdventScaffold extends Command
@@ -32,21 +34,26 @@ class AdventScaffold extends Command
     public function handle()
     {
         $currentDate = Carbon::now();
-        $year = $this->ask('For what year do you want to create scaffolding?', $currentDate->year);
-        $includeInputFolders = strtolower($this->ask('Do you want to prepare the input folders?', 'Y'));
+        $year = intval($this->ask('For what year do you want to create scaffolding?', $currentDate->year));
 
         $this->info('creating daily directories');
         for ($i = 1; $i <= 25; $i++) {
             $class = sprintf('%s/Year%s/Day%s/Solution', $this->rootDirectory, $year, $i);
             $this->call('advent:generate', ['name' => $class]);
-        }
 
-        if ($includeInputFolders === 'y') {
-            $this->info('Creating input folders');
-        } else {
-            $this->info('Skipping input folders');
+            $this->createInputFile($year, $i);
         }
 
         $this->info('Scaffolding completed. Happy Hacking!!!');
+    }
+
+    protected function createInputFile(int $year, int $day)
+    {
+        $inputDirectory = sprintf('%s/Year%s/Day%s', $this->rootDirectory, $year, $day);
+        Storage::makeDirectory($inputDirectory);
+
+        $inputFilePath = storage_path(sprintf('%s/input.txt', $inputDirectory));
+
+        File::put($inputFilePath, '');
     }
 }

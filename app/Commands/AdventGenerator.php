@@ -6,6 +6,8 @@ use Illuminate\Console\GeneratorCommand;
 
 class AdventGenerator extends GeneratorCommand
 {
+    protected $type = 'Solution';
+
     /**
      * The signature of the command.
      *
