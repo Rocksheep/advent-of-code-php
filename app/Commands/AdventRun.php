@@ -21,7 +21,7 @@ class AdventRun extends Command
      *
      * @var string
      */
-    protected $description = 'Create the scaffold for advent of code';
+    protected $description = 'Run the solution for the given year and day';
 
     /**
      * Execute the console command.
@@ -41,9 +41,6 @@ class AdventRun extends Command
             return -1;
         }
 
-        // if input exists
-        // get input from file
-        //
         /** @var SolutionInterface $instance */
         $instance = new $class();
 
