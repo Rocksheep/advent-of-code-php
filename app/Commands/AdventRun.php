@@ -2,9 +2,12 @@
 
 namespace App\Commands;
 
+use App\FileInput;
 use App\SolutionInterface;
 use App\StringInput;
 use Carbon\Carbon;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\File;
 use LaravelZero\Framework\Commands\Command;
 
 class AdventRun extends Command
@@ -41,10 +44,15 @@ class AdventRun extends Command
             return -1;
         }
 
+        try {
+            $input = $this->getFileInput($year, $solution);
+        } catch (FileNotFoundException $e) {
+            $this->error($e->getMessage());
+
+            return 1;
+        }
         /** @var SolutionInterface $instance */
         $instance = new $class();
-
-        $input = new StringInput();
 
         $this->table(
             ['Part one', 'Part two'],
@@ -52,5 +60,22 @@ class AdventRun extends Command
         );
 
         return 0;
+    }
+
+    /**
+     * @param int $year
+     * @param int $solution
+     * @return FileInput
+     * @throws FileNotFoundException
+     */
+    protected function getFileInput(int $year, int $solution): FileInput
+    {
+        $filePath = storage_path(sprintf('AdventOfCode/Year%s/Day%s/input.txt', $year, $solution));
+
+        if (!File::exists($filePath)) {
+            throw new FileNotFoundException(sprintf('Input file for %s - day %s does not exist', $year, $solution));
+        }
+
+        return new FileInput($filePath);
     }
 }
