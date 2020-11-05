@@ -2,9 +2,8 @@
 
 namespace App\Commands;
 
-use App\FileInput;
-use App\SolutionInterface;
 use App\StringInput;
+use App\SolutionInterface;
 use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\File;
@@ -17,7 +16,7 @@ class AdventRun extends Command
      *
      * @var string
      */
-    protected $signature = 'advent:run';
+    protected $signature = 'advent:run {year?} {solution?}';
 
     /**
      * The description of the command.
@@ -29,13 +28,24 @@ class AdventRun extends Command
     /**
      * Execute the console command.
      *
+     * @param int|null $year
+     * @param int|null $solution
+     *
      * @return mixed
      */
     public function handle()
     {
         $currentDate = Carbon::now();
-        $year = $this->ask('For what year do you want to execute code', $currentDate->year);
-        $solution = $this->ask('Which solution do you want to execute', min($currentDate->day, 25));
+
+        $year = $this->argument('year');
+        if (!$year) {
+            $year = $this->ask('For what year do you want to execute code', $currentDate->year);
+        }
+
+        $solution = $this->argument('solution');
+        if (!$solution) {
+            $solution = $this->ask('Which solution do you want to execute', min($currentDate->day, 25));
+        }
 
         $class = sprintf('App\AdventOfCode\Year%s\Day%s\Solution', $year, $solution);
         if (!class_exists($class)) {
@@ -65,10 +75,10 @@ class AdventRun extends Command
     /**
      * @param int $year
      * @param int $solution
-     * @return FileInput
+     * @return StringInput
      * @throws FileNotFoundException
      */
-    protected function getFileInput(int $year, int $solution): FileInput
+    protected function getFileInput(int $year, int $solution): StringInput
     {
         $filePath = storage_path(sprintf('AdventOfCode/Year%s/Day%s/input.txt', $year, $solution));
 
@@ -76,6 +86,6 @@ class AdventRun extends Command
             throw new FileNotFoundException(sprintf('Input file for %s - day %s does not exist', $year, $solution));
         }
 
-        return new FileInput($filePath);
+        return new StringInput(File::get($filePath));
     }
 }
