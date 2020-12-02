@@ -34,6 +34,11 @@ class Collection implements \Iterator
         return $this->values[$index];
     }
 
+    public function last()
+    {
+        return $this->values[count($this->values) - 1];
+    }
+
     public function map(callable $callback)
     {
         return self::fromArray(array_map($callback, $this->values));
@@ -42,6 +47,17 @@ class Collection implements \Iterator
     public function reduce(callable $callback, $startingValue)
     {
         return array_reduce($this->values, $callback, $startingValue);
+    }
+
+    public function each(callable $callback)
+    {
+        foreach ($this->values as $i => $value) {
+            $result = $callback($value, $i);
+
+            if ($result === false) {
+                break;
+            }
+        }
     }
 
     public function current()
