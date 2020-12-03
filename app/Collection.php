@@ -24,6 +24,11 @@ class Collection implements \Iterator
         return $instance;
     }
 
+    public function count(): int
+    {
+        return count($this->values);
+    }
+
     public function add($value)
     {
         $this->values[] = $value;
