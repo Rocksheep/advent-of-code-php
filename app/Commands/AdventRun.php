@@ -86,6 +86,6 @@ class AdventRun extends Command
             throw new FileNotFoundException(sprintf('Input file for %s - day %s does not exist', $year, $solution));
         }
 
-        return new StringInput(File::get($filePath));
+        return new StringInput(trim(File::get($filePath)));
     }
 }
