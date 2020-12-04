@@ -34,9 +34,19 @@ class Collection implements \Iterator
         $this->values[] = $value;
     }
 
-    public function get(int $index)
+    public function get($index)
     {
         return $this->values[$index];
+    }
+
+    public function set($index, $value)
+    {
+        $this->values[$index] = $value;
+    }
+
+    public function hasKey($index)
+    {
+        return isset($this->values[$index]);
     }
 
     public function last()
