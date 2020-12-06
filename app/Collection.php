@@ -75,6 +75,28 @@ class Collection implements \Iterator
         }
     }
 
+    public function intersect($collection): Collection
+    {
+        return Collection::fromArray(array_intersect($this->values, $collection->toArray()));
+    }
+
+    public function toArray(): array
+    {
+        return $this->values;
+    }
+
+    public function unique(): Collection
+    {
+        return Collection::fromArray(array_unique($this->values));
+    }
+
+    public function sort(): Collection
+    {
+        sort($this->values);
+
+        return $this;
+    }
+
     public function current()
     {
         return $this->values[$this->position];
